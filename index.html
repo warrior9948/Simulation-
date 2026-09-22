@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>3D Geometry Lab</title>
+<title>3D Cube Laboratory</title>
 
 <style>
 * {
@@ -18,1337 +19,535 @@ body {
     color: white;
     font-family: Arial, sans-serif;
     overflow: hidden;
+    touch-action: none;
 }
 
-button,
-input {
-    font: inherit;
+/* Main laboratory */
+#lab {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
 }
 
-/* ================= START SCREEN ================= */
-
-#startScreen {
-    position: fixed;
+/* 3D space */
+#space {
+    position: absolute;
     inset: 0;
-    background:
-        radial-gradient(circle at center, #132238 0%, #05070d 65%);
+    perspective: 900px;
+    overflow: hidden;
+}
+
+/* Grid floor */
+#grid {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    left: -50%;
+    top: 55%;
+    background-image:
+        linear-gradient(rgba(0,220,255,.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,220,255,.12) 1px, transparent 1px);
+    background-size: 50px 50px;
+    transform:
+        rotateX(70deg)
+        translateZ(-200px);
+}
+
+/* 3D world */
+#world {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+}
+
+/* Cube */
+#cube {
+    width: 180px;
+    height: 180px;
+    position: absolute;
+    left: -90px;
+    top: -90px;
+    transform-style: preserve-3d;
+}
+
+/* Cube faces */
+.face {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+
+    border: 2px solid rgba(255,255,255,.8);
+
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 100;
-    padding: 20px;
-}
+    justify-content: center;
 
-.startBox {
-    width: min(520px, 95vw);
-    text-align: center;
-    padding: 35px 25px;
-    border: 1px solid #29425e;
-    border-radius: 24px;
-    background: rgba(10, 15, 25, 0.9);
-    box-shadow: 0 0 50px rgba(0, 180, 255, 0.12);
-}
-
-.logo {
-    font-size: 65px;
-    margin-bottom: 10px;
-}
-
-.startBox h1 {
-    font-size: clamp(30px, 8vw, 52px);
-    letter-spacing: 3px;
-}
-
-.startBox p {
-    color: #8fa5bb;
-    margin: 12px 0 25px;
-}
-
-.startButton {
-    width: 100%;
-    max-width: 360px;
-    padding: 17px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #00aaff, #00e5ff);
-    color: #001018;
+    font-size: 25px;
     font-weight: bold;
-    font-size: 17px;
-    cursor: pointer;
-    box-shadow: 0 0 25px rgba(0, 200, 255, .25);
+
+    backface-visibility: visible;
+
+    box-shadow:
+        inset 0 0 30px rgba(0,220,255,.15),
+        0 0 15px rgba(0,220,255,.12);
 }
 
-.startButton:active {
-    transform: scale(.97);
+/* Six faces */
+.front {
+    transform: translateZ(90px);
+    background: rgba(0, 180, 255, .28);
 }
 
-.features {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 20px;
+.back {
+    transform: rotateY(180deg) translateZ(90px);
+    background: rgba(150, 70, 255, .25);
 }
 
-.feature {
-    padding: 7px 11px;
-    border-radius: 20px;
-    background: #111b29;
-    color: #7fdfff;
+.right {
+    transform: rotateY(90deg) translateZ(90px);
+    background: rgba(0, 255, 170, .25);
+}
+
+.left {
+    transform: rotateY(-90deg) translateZ(90px);
+    background: rgba(255, 170, 0, .25);
+}
+
+.top {
+    transform: rotateX(90deg) translateZ(90px);
+    background: rgba(255, 80, 180, .25);
+}
+
+.bottom {
+    transform: rotateX(-90deg) translateZ(90px);
+    background: rgba(255, 255, 255, .15);
+}
+
+/* Header */
+#header {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 20;
+}
+
+#header h1 {
+    font-size: 20px;
+}
+
+#header p {
+    color: #8b9bb4;
     font-size: 12px;
+    margin-top: 4px;
 }
 
-/* ================= APP ================= */
-
-#app {
-    display: none;
-    position: fixed;
-    inset: 0;
-}
-
-#scene {
+/* Controls */
+#controls {
     position: absolute;
-    inset: 0;
-}
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
 
-/* ================= TOP BAR ================= */
-
-.topbar {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    z-index: 10;
+    z-index: 20;
 
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    width: 95%;
+}
+
+button {
+    background: rgba(10,20,35,.85);
+    color: white;
+
+    border: 1px solid #1c91ad;
+    border-radius: 8px;
 
     padding: 10px 14px;
 
-    border: 1px solid #26384c;
-    border-radius: 14px;
-
-    background: rgba(5, 9, 16, .78);
-    backdrop-filter: blur(10px);
-}
-
-.title {
-    font-size: 16px;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-.subtitle {
-    color: #6d8297;
-    font-size: 10px;
-    margin-top: 3px;
-}
-
-.status {
-    color: #00e5ff;
-    font-size: 11px;
-}
-
-/* ================= CONTROL PANEL ================= */
-
-.panel {
-    position: absolute;
-    z-index: 10;
-
-    left: 12px;
-    bottom: 12px;
-
-    width: min(330px, calc(100vw - 24px));
-
-    padding: 15px;
-
-    border: 1px solid #26384c;
-    border-radius: 16px;
-
-    background: rgba(5, 9, 16, .88);
-    backdrop-filter: blur(12px);
-
-    max-height: calc(100vh - 90px);
-    overflow-y: auto;
-}
-
-.sectionTitle {
-    color: #00e5ff;
-    font-size: 11px;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-}
-
-.control {
-    margin-bottom: 12px;
-}
-
-.controlRow {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    margin-bottom: 5px;
-}
-
-.value {
-    color: #00e5ff;
-    font-weight: bold;
-}
-
-input[type="range"] {
-    width: 100%;
-    accent-color: #00d9ff;
-}
-
-.buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 7px;
-    margin-top: 12px;
-}
-
-.tool {
-    padding: 10px 6px;
-    border-radius: 9px;
-    border: 1px solid #294158;
-    background: #101a27;
-    color: white;
-    font-size: 11px;
-    cursor: pointer;
-}
-
-.tool.active {
-    background: #063c4b;
-    border-color: #00d9ff;
-    color: #00e5ff;
-}
-
-/* ================= STATS ================= */
-
-.stats {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid #233345;
-
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 7px;
-}
-
-.stat {
-    background: #0c141f;
-    padding: 8px;
-    border-radius: 8px;
-}
-
-.statName {
-    color: #71869a;
-    font-size: 9px;
-}
-
-.statValue {
-    color: white;
     font-size: 13px;
-    margin-top: 2px;
+
+    backdrop-filter: blur(8px);
 }
 
-/* ================= FORMULAS ================= */
-
-.formulas {
-    margin-top: 12px;
-    color: #71869a;
-    font-size: 10px;
-    line-height: 1.6;
+button:active {
+    transform: scale(.95);
 }
 
-.formulas b {
-    color: #a8bacb;
-}
-
-/* ================= HELP ================= */
-
-.help {
+/* Information panel */
+#info {
     position: absolute;
     right: 15px;
-    bottom: 15px;
-    z-index: 5;
+    top: 15px;
 
-    padding: 8px 12px;
+    z-index: 20;
+
+    background: rgba(5,10,20,.75);
+    border: 1px solid #1c91ad;
 
     border-radius: 10px;
 
-    background: rgba(5, 9, 16, .7);
-    color: #70869a;
+    padding: 12px;
 
-    font-size: 10px;
+    font-size: 12px;
+
+    min-width: 150px;
+
+    backdrop-filter: blur(8px);
 }
 
-/* ================= MOBILE ================= */
-
-@media (max-width: 700px) {
-
-    .panel {
-        width: 250px;
-        padding: 11px;
-    }
-
-    .control {
-        margin-bottom: 8px;
-    }
-
-    .buttons {
-        gap: 5px;
-    }
-
-    .tool {
-        padding: 8px 4px;
-    }
-
-    .help {
-        display: none;
-    }
+.value {
+    color: #00d9ff;
 }
 
-@media (max-width: 450px) {
+/* Start screen */
+#startScreen {
+    position: absolute;
+    inset: 0;
 
-    .panel {
-        width: 220px;
-    }
+    z-index: 100;
 
-    .title {
-        font-size: 13px;
-    }
+    background:
+        radial-gradient(circle at center,
+        rgba(0,200,255,.12),
+        #05070d 60%);
 
-    .subtitle {
-        font-size: 8px;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    .status {
-        font-size: 9px;
-    }
+    flex-direction: column;
 
-    .stats {
-        gap: 4px;
-    }
+    text-align: center;
+}
 
-    .stat {
-        padding: 6px;
-    }
+#startScreen h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+#startScreen p {
+    color: #9caac0;
+    margin-bottom: 25px;
+    max-width: 400px;
+    padding: 0 20px;
+}
+
+#startButton {
+    font-size: 16px;
+    padding: 14px 30px;
+    border-color: #00d9ff;
+}
+
+/* Hide UI initially */
+.hidden {
+    display: none !important;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= START SCREEN ================= -->
+<div id="lab">
 
-<div id="startScreen">
+    <!-- START SCREEN -->
+    <div id="startScreen">
 
-    <div class="startBox">
-
-        <div class="logo">📐</div>
-
-        <h1>3D GEOMETRY LAB</h1>
+        <h1>3D CUBE LABORATORY</h1>
 
         <p>
-            Interactive laboratory for exploring
-            cubes, cuboids and 3D geometry.
+            Explore a cube inside a virtual 3D space.
+            Drag to rotate, pinch or use the buttons to control it.
         </p>
 
-        <button class="startButton" onclick="startLab()">
-            ▶ START LABORATORY
+        <button id="startButton">
+            START LABORATORY
         </button>
 
-        <div class="features">
-            <div class="feature">REAL 3D</div>
-            <div class="feature">TOUCH CONTROL</div>
-            <div class="feature">LIVE FORMULAS</div>
-            <div class="feature">INTERACTIVE</div>
+    </div>
+
+
+    <!-- MAIN 3D SPACE -->
+    <div id="space">
+
+        <div id="grid"></div>
+
+        <div id="world">
+
+            <div id="cube">
+
+                <div class="face front">FRONT</div>
+                <div class="face back">BACK</div>
+                <div class="face right">RIGHT</div>
+                <div class="face left">LEFT</div>
+                <div class="face top">TOP</div>
+                <div class="face bottom">BOTTOM</div>
+
+            </div>
+
         </div>
+
+    </div>
+
+
+    <!-- HEADER -->
+    <div id="header" class="hidden">
+
+        <h1>3D CUBE LAB</h1>
+
+        <p>Interactive 3D Environment</p>
+
+    </div>
+
+
+    <!-- INFORMATION -->
+    <div id="info" class="hidden">
+
+        <div>ROT X: <span id="rx" class="value">0°</span></div>
+        <div>ROT Y: <span id="ry" class="value">0°</span></div>
+        <div>ROT Z: <span id="rz" class="value">0°</span></div>
+        <div>ZOOM: <span id="zoomText" class="value">1.0x</span></div>
+
+    </div>
+
+
+    <!-- CONTROLS -->
+    <div id="controls" class="hidden">
+
+        <button onclick="rotateCube(-10,0,0)">▲</button>
+        <button onclick="rotateCube(10,0,0)">▼</button>
+
+        <button onclick="rotateCube(0,-10,0)">◀</button>
+        <button onclick="rotateCube(0,10,0)">▶</button>
+
+        <button onclick="rotateCube(0,0,-10)">⟲</button>
+        <button onclick="rotateCube(0,0,10)">⟳</button>
+
+        <button onclick="resetCube()">RESET</button>
+
+        <button onclick="zoomCube(0.1)">＋</button>
+        <button onclick="zoomCube(-0.1)">−</button>
 
     </div>
 
 </div>
 
 
-<!-- ================= APPLICATION ================= -->
+<script>
 
-<div id="app">
+const cube = document.getElementById("cube");
 
-    <div id="scene"></div>
+let rotX = -20;
+let rotY = 25;
+let rotZ = 0;
 
+let zoom = 1;
 
-    <!-- TOP BAR -->
 
-    <div class="topbar">
+/* --------------------------------
+   UPDATE CUBE
+-------------------------------- */
 
-        <div>
-            <div class="title">3D GEOMETRY LAB</div>
-            <div class="subtitle">INTERACTIVE CUBOID SIMULATOR</div>
-        </div>
+function updateCube() {
 
-        <div class="status" id="status">
-            ● LIVE
-        </div>
+    cube.style.transform =
+        `scale3d(${zoom}, ${zoom}, ${zoom})
+         rotateX(${rotX}deg)
+         rotateY(${rotY}deg)
+         rotateZ(${rotZ}deg)`;
 
-    </div>
+    document.getElementById("rx").textContent =
+        Math.round(rotX) + "°";
 
+    document.getElementById("ry").textContent =
+        Math.round(rotY) + "°";
 
-    <!-- CONTROL PANEL -->
+    document.getElementById("rz").textContent =
+        Math.round(rotZ) + "°";
 
-    <div class="panel">
-
-        <div class="sectionTitle">
-            DIMENSIONS
-        </div>
-
-
-        <div class="control">
-
-            <div class="controlRow">
-                <span>Length</span>
-                <span class="value" id="lengthValue">5</span>
-            </div>
-
-            <input
-                id="length"
-                type="range"
-                min="1"
-                max="10"
-                step="0.1"
-                value="5"
-            >
-
-        </div>
-
-
-        <div class="control">
-
-            <div class="controlRow">
-                <span>Breadth</span>
-                <span class="value" id="breadthValue">4</span>
-            </div>
-
-            <input
-                id="breadth"
-                type="range"
-                min="1"
-                max="10"
-                step="0.1"
-                value="4"
-            >
-
-        </div>
-
-
-        <div class="control">
-
-            <div class="controlRow">
-                <span>Height</span>
-                <span class="value" id="heightValue">3</span>
-            </div>
-
-            <input
-                id="height"
-                type="range"
-                min="1"
-                max="10"
-                step="0.1"
-                value="3"
-            >
-
-        </div>
-
-
-        <!-- BUTTONS -->
-
-        <div class="sectionTitle">
-            TOOLS
-        </div>
-
-        <div class="buttons">
-
-            <button class="tool" id="wireButton">
-                ◇ WIREFRAME
-            </button>
-
-            <button class="tool" id="labelButton">
-                🔤 LABELS
-            </button>
-
-            <button class="tool" id="explodeButton">
-                💥 EXPLODE
-            </button>
-
-            <button class="tool active" id="gridButton">
-                # GRID
-            </button>
-
-            <button class="tool" id="rotateButton">
-                🔄 AUTO ROTATE
-            </button>
-
-            <button class="tool" id="resetButton">
-                ↺ RESET
-            </button>
-
-        </div>
-
-
-        <!-- STATS -->
-
-        <div class="sectionTitle" style="margin-top:15px;">
-            LIVE GEOMETRY
-        </div>
-
-        <div class="stats">
-
-            <div class="stat">
-                <div class="statName">LENGTH</div>
-                <div class="statValue" id="statL">5</div>
-            </div>
-
-            <div class="stat">
-                <div class="statName">BREADTH</div>
-                <div class="statValue" id="statB">4</div>
-            </div>
-
-            <div class="stat">
-                <div class="statName">HEIGHT</div>
-                <div class="statValue" id="statH">3</div>
-            </div>
-
-            <div class="stat">
-                <div class="statName">VOLUME</div>
-                <div class="statValue" id="volume">60</div>
-            </div>
-
-            <div class="stat">
-                <div class="statName">TSA</div>
-                <div class="statValue" id="tsa">94</div>
-            </div>
-
-            <div class="stat">
-                <div class="statName">LSA</div>
-                <div class="statValue" id="lsa">54</div>
-            </div>
-
-        </div>
-
-
-        <div class="formulas">
-
-            <b>Volume</b> = L × B × H<br>
-
-            <b>TSA</b> = 2(LB + BH + HL)<br>
-
-            <b>LSA</b> = 2H(L + B)
-
-        </div>
-
-    </div>
-
-
-    <div class="help">
-        Drag = Rotate &nbsp; • &nbsp;
-        Pinch/Wheel = Zoom
-    </div>
-
-</div>
-
-
-<!-- ================= THREE.JS ================= -->
-
-<script type="module">
-
-import * as THREE from
-"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
-
-import { OrbitControls } from
-"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
-
-
-let scene;
-let camera;
-let renderer;
-let controls;
-
-let cube;
-let edges;
-let grid;
-
-let labels = [];
-
-let autoRotate = false;
-let exploded = false;
-let showLabels = false;
-
-let initialized = false;
-
-
-/* ================= START ================= */
-
-window.startLab = function () {
-
-    document.getElementById("startScreen").style.display = "none";
-
-    document.getElementById("app").style.display = "block";
-
-    if (!initialized) {
-
-        init3D();
-
-        initialized = true;
-
-    }
-
-};
-
-
-/* ================= INITIALIZE ================= */
-
-function init3D() {
-
-    const container = document.getElementById("scene");
-
-
-    /* SCENE */
-
-    scene = new THREE.Scene();
-
-    scene.background = new THREE.Color(0x05070d);
-
-
-    /* CAMERA */
-
-    camera = new THREE.PerspectiveCamera(
-        45,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-    );
-
-    camera.position.set(9, 7, 10);
-
-
-    /* RENDERER */
-
-    renderer = new THREE.WebGLRenderer({
-        antialias: true
-    });
-
-    renderer.setPixelRatio(
-        Math.min(window.devicePixelRatio, 2)
-    );
-
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-
-    renderer.outputColorSpace =
-        THREE.SRGBColorSpace;
-
-    container.appendChild(renderer.domElement);
-
-
-    /* CONTROLS */
-
-    controls = new OrbitControls(
-        camera,
-        renderer.domElement
-    );
-
-    controls.enableDamping = true;
-
-    controls.dampingFactor = 0.06;
-
-    controls.minDistance = 4;
-
-    controls.maxDistance = 40;
-
-    controls.target.set(0, 0, 0);
-
-
-    /* LIGHTING */
-
-    const ambient =
-        new THREE.AmbientLight(
-            0xffffff,
-            1.8
-        );
-
-    scene.add(ambient);
-
-
-    const directional =
-        new THREE.DirectionalLight(
-            0xffffff,
-            3
-        );
-
-    directional.position.set(
-        6,
-        10,
-        8
-    );
-
-    scene.add(directional);
-
-
-    const fill =
-        new THREE.PointLight(
-            0x00ccff,
-            80,
-            40
-        );
-
-    fill.position.set(
-        -6,
-        4,
-        -6
-    );
-
-    scene.add(fill);
-
-
-    /* GRID */
-
-    grid = new THREE.GridHelper(
-        30,
-        30,
-        0x31566b,
-        0x14202b
-    );
-
-    scene.add(grid);
-
-
-    /* FLOOR */
-
-    const floor =
-        new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-                30,
-                30
-            ),
-
-            new THREE.MeshStandardMaterial({
-                color: 0x070b11,
-                roughness: 0.8,
-                metalness: 0.1
-            })
-
-        );
-
-    floor.rotation.x =
-        -Math.PI / 2;
-
-    floor.position.y = -0.02;
-
-    scene.add(floor);
-
-
-    /* CREATE CUBOID */
-
-    createCuboid();
-
-
-    /* RESIZE */
-
-    window.addEventListener(
-        "resize",
-        onResize
-    );
-
-
-    /* ANIMATION */
-
-    animate();
-
+    document.getElementById("zoomText").textContent =
+        zoom.toFixed(1) + "x";
 }
 
 
-/* ================= CUBOID ================= */
+/* --------------------------------
+   ROTATION
+-------------------------------- */
 
-function createCuboid() {
+function rotateCube(x, y, z) {
 
-    if (cube) {
+    rotX += x;
+    rotY += y;
+    rotZ += z;
 
-        scene.remove(cube);
-
-    }
-
-    if (edges) {
-
-        scene.remove(edges);
-
-    }
-
-
-    const L =
-        parseFloat(
-            document.getElementById("length").value
-        );
-
-    const B =
-        parseFloat(
-            document.getElementById("breadth").value
-        );
-
-    const H =
-        parseFloat(
-            document.getElementById("height").value
-        );
-
-
-    const geometry =
-        new THREE.BoxGeometry(
-            L,
-            H,
-            B
-        );
-
-
-    const material =
-        new THREE.MeshStandardMaterial({
-
-            color: 0x009dcc,
-
-            metalness: 0.25,
-
-            roughness: 0.28,
-
-            transparent: false
-
-        });
-
-
-    cube =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-
-    cube.position.y =
-        H / 2;
-
-
-    scene.add(cube);
-
-
-    /* EDGES */
-
-    const edgeGeometry =
-        new THREE.EdgesGeometry(
-            geometry
-        );
-
-    const edgeMaterial =
-        new THREE.LineBasicMaterial({
-            color: 0x8deaff,
-            linewidth: 2
-        });
-
-    edges =
-        new THREE.LineSegments(
-            edgeGeometry,
-            edgeMaterial
-        );
-
-    edges.position.copy(
-        cube.position
-    );
-
-    scene.add(edges);
-
-
-    updateStats();
-
+    updateCube();
 }
 
 
-/* ================= STATS ================= */
+/* --------------------------------
+   ZOOM
+-------------------------------- */
 
-function updateStats() {
+function zoomCube(amount) {
 
-    const L =
-        parseFloat(
-            document.getElementById("length").value
-        );
+    zoom += amount;
 
-    const B =
-        parseFloat(
-            document.getElementById("breadth").value
-        );
+    zoom = Math.max(.4, Math.min(2.5, zoom));
 
-    const H =
-        parseFloat(
-            document.getElementById("height").value
-        );
-
-
-    const volume =
-        L * B * H;
-
-    const tsa =
-        2 * (
-            L * B +
-            B * H +
-            H * L
-        );
-
-    const lsa =
-        2 * H * (L + B);
-
-
-    document.getElementById(
-        "lengthValue"
-    ).textContent = L.toFixed(1);
-
-    document.getElementById(
-        "breadthValue"
-    ).textContent = B.toFixed(1);
-
-    document.getElementById(
-        "heightValue"
-    ).textContent = H.toFixed(1);
-
-
-    document.getElementById(
-        "statL"
-    ).textContent = L.toFixed(1);
-
-    document.getElementById(
-        "statB"
-    ).textContent = B.toFixed(1);
-
-    document.getElementById(
-        "statH"
-    ).textContent = H.toFixed(1);
-
-
-    document.getElementById(
-        "volume"
-    ).textContent = volume.toFixed(2);
-
-    document.getElementById(
-        "tsa"
-    ).textContent = tsa.toFixed(2);
-
-    document.getElementById(
-        "lsa"
-    ).textContent = lsa.toFixed(2);
-
+    updateCube();
 }
 
 
-/* ================= SLIDERS ================= */
+/* --------------------------------
+   RESET
+-------------------------------- */
 
-document.getElementById(
-    "length"
-).addEventListener(
-    "input",
-    () => {
+function resetCube() {
 
-        createCuboid();
+    rotX = -20;
+    rotY = 25;
+    rotZ = 0;
 
-    }
-);
+    zoom = 1;
 
-
-document.getElementById(
-    "breadth"
-).addEventListener(
-    "input",
-    () => {
-
-        createCuboid();
-
-    }
-);
-
-
-document.getElementById(
-    "height"
-).addEventListener(
-    "input",
-    () => {
-
-        createCuboid();
-
-    }
-);
-
-
-/* ================= WIREFRAME ================= */
-
-document.getElementById(
-    "wireButton"
-).onclick = function () {
-
-    if (!cube) return;
-
-    cube.material.wireframe =
-        !cube.material.wireframe;
-
-    this.classList.toggle(
-        "active"
-    );
-
-};
-
-
-/* ================= GRID ================= */
-
-document.getElementById(
-    "gridButton"
-).onclick = function () {
-
-    grid.visible =
-        !grid.visible;
-
-    this.classList.toggle(
-        "active"
-    );
-
-};
-
-
-/* ================= AUTO ROTATE ================= */
-
-document.getElementById(
-    "rotateButton"
-).onclick = function () {
-
-    autoRotate =
-        !autoRotate;
-
-    this.classList.toggle(
-        "active"
-    );
-
-};
-
-
-/* ================= LABELS ================= */
-
-document.getElementById(
-    "labelButton"
-).onclick = function () {
-
-    showLabels =
-        !showLabels;
-
-    this.classList.toggle(
-        "active"
-    );
-
-    createLabels();
-
-};
-
-
-/* ================= LABEL CREATION ================= */
-
-function createLabels() {
-
-    labels.forEach(
-        label => scene.remove(label)
-    );
-
-    labels = [];
-
-
-    if (!showLabels || !cube)
-        return;
-
-
-    const L =
-        parseFloat(
-            document.getElementById("length").value
-        );
-
-    const B =
-        parseFloat(
-            document.getElementById("breadth").value
-        );
-
-    const H =
-        parseFloat(
-            document.getElementById("height").value
-        );
-
-
-    addLabel(
-        "L = " + L,
-        new THREE.Vector3(
-            0,
-            -0.3,
-            B / 2
-        )
-    );
-
-
-    addLabel(
-        "B = " + B,
-        new THREE.Vector3(
-            L / 2,
-            -0.3,
-            0
-        )
-    );
-
-
-    addLabel(
-        "H = " + H,
-        new THREE.Vector3(
-            L / 2 + 0.3,
-            H / 2,
-            B / 2
-        )
-    );
-
+    updateCube();
 }
 
 
-function addLabel(text, position) {
+/* --------------------------------
+   START LAB
+-------------------------------- */
 
-    const canvas =
-        document.createElement("canvas");
+document.getElementById("startButton")
+.addEventListener("click", () => {
 
-    canvas.width = 256;
+    document.getElementById("startScreen")
+        .classList.add("hidden");
 
-    canvas.height = 64;
+    document.getElementById("header")
+        .classList.remove("hidden");
 
+    document.getElementById("info")
+        .classList.remove("hidden");
 
-    const ctx =
-        canvas.getContext("2d");
+    document.getElementById("controls")
+        .classList.remove("hidden");
 
-    ctx.fillStyle =
-        "rgba(0,0,0,0.75)";
+    updateCube();
 
-    ctx.roundRect(
-        0,
-        0,
-        256,
-        64,
-        12
-    );
+});
 
-    ctx.fill();
 
+/* --------------------------------
+   TOUCH / MOUSE DRAG
+-------------------------------- */
 
-    ctx.fillStyle =
-        "#ffffff";
+let dragging = false;
 
-    ctx.font =
-        "bold 30px Arial";
+let lastX = 0;
+let lastY = 0;
 
-    ctx.textAlign =
-        "center";
 
-    ctx.textBaseline =
-        "middle";
+/* Mouse */
 
-    ctx.fillText(
-        text,
-        128,
-        32
-    );
+document.addEventListener("mousedown", e => {
 
+    dragging = true;
 
-    const texture =
-        new THREE.CanvasTexture(
-            canvas
-        );
+    lastX = e.clientX;
+    lastY = e.clientY;
 
+});
 
-    const material =
-        new THREE.SpriteMaterial({
-            map: texture,
-            transparent: true
-        });
 
+document.addEventListener("mousemove", e => {
 
-    const sprite =
-        new THREE.Sprite(
-            material
-        );
+    if (!dragging) return;
 
-    sprite.position.copy(
-        position
-    );
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
 
-    sprite.scale.set(
-        2.4,
-        0.6,
-        1
-    );
+    rotY += dx * .5;
+    rotX -= dy * .5;
 
+    lastX = e.clientX;
+    lastY = e.clientY;
 
-    scene.add(sprite);
+    updateCube();
 
-    labels.push(sprite);
+});
 
-}
 
+document.addEventListener("mouseup", () => {
 
-/* ================= EXPLODE ================= */
+    dragging = false;
 
-document.getElementById(
-    "explodeButton"
-).onclick = function () {
+});
 
-    exploded =
-        !exploded;
 
-    this.classList.toggle(
-        "active"
-    );
+/* Touch */
 
+document.addEventListener("touchstart", e => {
 
-    if (!cube || !edges)
-        return;
+    if (e.touches.length !== 1) return;
 
+    dragging = true;
 
-    if (exploded) {
+    lastX = e.touches[0].clientX;
+    lastY = e.touches[0].clientY;
 
-        cube.position.y += 1;
+}, {passive:false});
 
-        edges.position.y += 1;
 
-    } else {
+document.addEventListener("touchmove", e => {
 
-        const H =
-            parseFloat(
-                document.getElementById(
-                    "height"
-                ).value
-            );
+    if (!dragging || e.touches.length !== 1) return;
 
-        cube.position.y =
-            H / 2;
+    e.preventDefault();
 
-        edges.position.y =
-            H / 2;
+    const x = e.touches[0].clientX;
+    const y = e.touches[0].clientY;
 
-    }
+    const dx = x - lastX;
+    const dy = y - lastY;
 
-};
+    rotY += dx * .5;
+    rotX -= dy * .5;
 
+    lastX = x;
+    lastY = y;
 
-/* ================= RESET ================= */
+    updateCube();
 
-document.getElementById(
-    "resetButton"
-).onclick = function () {
+}, {passive:false});
 
-    document.getElementById(
-        "length"
-    ).value = 5;
 
-    document.getElementById(
-        "breadth"
-    ).value = 4;
+document.addEventListener("touchend", () => {
 
-    document.getElementById(
-        "height"
-    ).value = 3;
+    dragging = false;
 
+});
 
-    autoRotate = false;
 
-    exploded = false;
+/* --------------------------------
+   MOUSE WHEEL ZOOM
+-------------------------------- */
 
-    showLabels = false;
+document.addEventListener("wheel", e => {
 
+    zoomCube(e.deltaY > 0 ? -.1 : .1);
 
-    document.getElementById(
-        "rotateButton"
-    ).classList.remove("active");
+});
 
-    document.getElementById(
-        "labelButton"
-    ).classList.remove("active");
 
-    document.getElementById(
-        "explodeButton"
-    ).classList.remove("active");
-
-
-    camera.position.set(
-        9,
-        7,
-        10
-    );
-
-    controls.target.set(
-        0,
-        0,
-        0
-    );
-
-    controls.update();
-
-
-    createCuboid();
-
-};
-
-
-/* ================= RESIZE ================= */
-
-function onResize() {
-
-    camera.aspect =
-        window.innerWidth /
-        window.innerHeight;
-
-    camera.updateProjectionMatrix();
-
-
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-
-}
-
-
-/* ================= ANIMATION ================= */
-
-function animate() {
-
-    requestAnimationFrame(
-        animate
-    );
-
-
-    if (
-        autoRotate &&
-        cube
-    ) {
-
-        cube.rotation.y += 0.008;
-
-        edges.rotation.y =
-            cube.rotation.y;
-
-    }
-
-
-    controls.update();
-
-    renderer.render(
-        scene,
-        camera
-    );
-
-}
+/* Initial */
+updateCube();
 
 </script>
 
