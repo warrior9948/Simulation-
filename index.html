@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-<title>3D Geometry Lab</title>
+<title>3D Geometry Laboratory</title>
 
 <style>
 *{
@@ -23,14 +22,140 @@ html,body{
     color:white;
 }
 
+button{
+    font-family:inherit;
+}
+
+/* ================= START SCREEN ================= */
+
+#startScreen{
+    position:absolute;
+    inset:0;
+    z-index:100;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #102538 0%,
+            #07101b 38%,
+            #03050a 100%
+        );
+}
+
+.startContent{
+    width:min(650px,90%);
+    text-align:center;
+}
+
+.cubeIcon{
+    width:130px;
+    height:130px;
+    margin:0 auto 25px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:75px;
+
+    border:1px solid rgba(85,216,255,.35);
+    border-radius:30px;
+
+    background:rgba(85,216,255,.06);
+
+    box-shadow:
+        0 0 50px rgba(85,216,255,.12);
+}
+
+.startTitle{
+    font-size:clamp(32px,7vw,62px);
+    font-weight:900;
+    letter-spacing:-2px;
+}
+
+.startTitle span{
+    color:#55d8ff;
+}
+
+.subtitle{
+    margin:15px auto 32px;
+    max-width:520px;
+
+    color:#8c9aae;
+    line-height:1.6;
+    font-size:14px;
+}
+
+.startButton{
+    min-width:260px;
+    min-height:58px;
+
+    padding:0 28px;
+
+    border:1px solid #55d8ff;
+    border-radius:15px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(85,216,255,.22),
+        rgba(85,216,255,.07)
+    );
+
+    color:white;
+
+    font-size:15px;
+    font-weight:900;
+    letter-spacing:1px;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 0 30px rgba(85,216,255,.12);
+
+    transition:.2s;
+}
+
+.startButton:hover{
+    transform:translateY(-2px);
+    background:rgba(85,216,255,.2);
+    box-shadow:
+        0 0 45px rgba(85,216,255,.25);
+}
+
+.features{
+    margin-top:30px;
+
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.feature{
+    padding:8px 12px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#8997a9;
+    font-size:10px;
+}
+
+/* ================= APP ================= */
+
 #app{
     width:100%;
     height:100%;
     position:relative;
     overflow:hidden;
+    display:none;
 }
-
-/* ================= 3D CANVAS ================= */
 
 #scene{
     position:absolute;
@@ -78,7 +203,7 @@ html,body{
     font-size:11px;
 }
 
-/* ================= CONTROL PANEL ================= */
+/* ================= PANEL ================= */
 
 .panel{
     position:absolute;
@@ -137,15 +262,13 @@ hr{
     margin:18px 0;
 }
 
-/* ================= BUTTONS ================= */
-
 .buttons{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:8px;
 }
 
-button{
+.labButton{
     min-height:42px;
 
     border-radius:11px;
@@ -163,12 +286,12 @@ button{
     transition:.2s;
 }
 
-button:hover{
+.labButton:hover{
     background:rgba(85,216,255,.12);
     border-color:rgba(85,216,255,.45);
 }
 
-button.active{
+.labButton.active{
     background:rgba(85,216,255,.18);
     border-color:#55d8ff;
 }
@@ -216,8 +339,6 @@ button.active{
     font-size:10px;
 }
 
-/* ================= HELP ================= */
-
 .help{
     position:absolute;
 
@@ -240,7 +361,7 @@ button.active{
     white-space:nowrap;
 }
 
-/* ================= MOBILE ================= */
+/* ================= RESPONSIVE ================= */
 
 @media(max-width:750px){
 
@@ -264,12 +385,6 @@ button.active{
     .status{
         display:none;
     }
-
-    .help{
-        font-size:9px;
-        max-width:90%;
-        overflow:hidden;
-    }
 }
 
 @media(max-width:500px){
@@ -289,17 +404,66 @@ button.active{
     .buttons{
         grid-template-columns:1fr;
     }
+
+    .help{
+        display:none;
+    }
 }
 </style>
 </head>
 
 <body>
 
+<!-- ================= START SCREEN ================= -->
+
+<div id="startScreen">
+
+    <div class="startContent">
+
+        <div class="cubeIcon">
+            🧊
+        </div>
+
+        <div class="startTitle">
+            3D <span>GEOMETRY</span> LAB
+        </div>
+
+        <div class="subtitle">
+            Explore geometry in a real-time 3D environment.
+            Manipulate dimensions, rotate the object, inspect
+            surfaces and calculate geometric properties instantly.
+        </div>
+
+        <button
+            id="startButton"
+            class="startButton"
+            type="button">
+
+            ▶ START LABORATORY
+
+        </button>
+
+        <div class="features">
+
+            <div class="feature">🧊 REAL 3D</div>
+            <div class="feature">📐 DIMENSIONS</div>
+            <div class="feature">🧮 LIVE MATH</div>
+            <div class="feature">👆 TOUCH CONTROL</div>
+            <div class="feature">🔍 ZOOM</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= LAB ================= -->
+
 <div id="app">
 
 <canvas id="scene"></canvas>
 
-<!-- ================= TOP ================= -->
 
 <div class="topbar">
 
@@ -314,7 +478,7 @@ button.active{
 </div>
 
 
-<!-- ================= LEFT CONTROLS ================= -->
+<!-- CONTROLS -->
 
 <div class="panel">
 
@@ -385,27 +549,27 @@ button.active{
 
     <div class="buttons">
 
-        <button id="wire">
+        <button class="labButton" id="wire">
             ◇ Wireframe
         </button>
 
-        <button id="labels">
+        <button class="labButton" id="labels">
             📐 Labels
         </button>
 
-        <button id="explode">
+        <button class="labButton" id="explode">
             💥 Explode
         </button>
 
-        <button id="grid">
+        <button class="labButton" id="grid">
             ⊞ Grid
         </button>
 
-        <button id="spin">
+        <button class="labButton" id="spin">
             ⟳ Auto Rotate
         </button>
 
-        <button id="reset">
+        <button class="labButton" id="reset">
             ↺ Reset
         </button>
 
@@ -414,48 +578,24 @@ button.active{
 </div>
 
 
-<!-- ================= RIGHT STATS ================= -->
+<!-- STATISTICS -->
 
 <div class="stats">
 
     <div class="card">
-
-        <div class="label">
-            Length
-        </div>
-
-        <div class="value" id="statL">
-            5
-        </div>
-
+        <div class="label">Length</div>
+        <div class="value" id="statL">5</div>
     </div>
-
 
     <div class="card">
-
-        <div class="label">
-            Breadth
-        </div>
-
-        <div class="value" id="statB">
-            4
-        </div>
-
+        <div class="label">Breadth</div>
+        <div class="value" id="statB">4</div>
     </div>
-
 
     <div class="card">
-
-        <div class="label">
-            Height
-        </div>
-
-        <div class="value" id="statH">
-            3
-        </div>
-
+        <div class="label">Height</div>
+        <div class="value" id="statH">3</div>
     </div>
-
 
     <div class="card">
 
@@ -473,7 +613,6 @@ button.active{
 
     </div>
 
-
     <div class="card">
 
         <div class="label">
@@ -489,7 +628,6 @@ button.active{
         </div>
 
     </div>
-
 
     <div class="card">
 
@@ -511,7 +649,7 @@ button.active{
 
 
 <div class="help">
-    👆 Drag = Rotate &nbsp; • &nbsp; 🤏 Pinch = Zoom &nbsp; • &nbsp; 🖱️ Wheel = Zoom
+    👆 Drag = Rotate • 🤏 Pinch = Zoom • 🖱️ Wheel = Zoom
 </div>
 
 </div>
@@ -527,174 +665,241 @@ import { OrbitControls } from
 
 
 /* =====================================================
-   RENDERER
+   START LAB
 ===================================================== */
 
-const canvas =
-document.getElementById("scene");
+const startScreen =
+document.getElementById("startScreen");
 
-const renderer =
-new THREE.WebGLRenderer({
-    canvas:canvas,
-    antialias:true
+const app =
+document.getElementById("app");
+
+document
+.getElementById("startButton")
+.addEventListener("click",()=>{
+
+    startScreen.style.display="none";
+    app.style.display="block";
+
+    init3D();
+
 });
 
-renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio,2)
-);
-
-renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-);
-
-renderer.outputColorSpace =
-THREE.SRGBColorSpace;
-
 
 /* =====================================================
-   SCENE
+   VARIABLES
 ===================================================== */
 
-const scene =
-new THREE.Scene();
-
-scene.background =
-new THREE.Color(0x05070d);
-
-
-/* =====================================================
-   CAMERA
-===================================================== */
-
-const camera =
-new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth/window.innerHeight,
-    0.1,
-    1000
-);
-
-camera.position.set(
-    9,
-    7,
-    10
-);
-
-
-/* =====================================================
-   CONTROLS
-===================================================== */
-
-const controls =
-new OrbitControls(
-    camera,
-    renderer.domElement
-);
-
-controls.enableDamping = true;
-controls.dampingFactor = 0.07;
-
-controls.minDistance = 3;
-controls.maxDistance = 30;
-
-controls.target.set(0,0,0);
-
-
-/* =====================================================
-   LIGHTING
-===================================================== */
-
-scene.add(
-    new THREE.AmbientLight(
-        0xffffff,
-        1.5
-    )
-);
-
-const light =
-new THREE.DirectionalLight(
-    0xffffff,
-    3
-);
-
-light.position.set(
-    8,
-    12,
-    10
-);
-
-scene.add(light);
-
-
-const blueLight =
-new THREE.PointLight(
-    0x45d9ff,
-    80,
-    50
-);
-
-blueLight.position.set(
-    -7,
-    4,
-    -8
-);
-
-scene.add(blueLight);
-
-
-/* =====================================================
-   GRID
-===================================================== */
-
-const grid =
-new THREE.GridHelper(
-    30,
-    30,
-    0x29445a,
-    0x152331
-);
-
-grid.position.y = -4;
-
-scene.add(grid);
-
-
-/* =====================================================
-   CUBE
-===================================================== */
+let renderer;
+let scene;
+let camera;
+let controls;
 
 let cube;
 let edges;
 
-const cubeGroup =
-new THREE.Group();
+let cubeGroup;
+let labelGroup;
+let grid;
 
-scene.add(cubeGroup);
+let autoRotate=false;
+let exploded=false;
 
+let wire=false;
+let labels=true;
+
+let L=5;
+let B=4;
+let H=3;
+
+
+/* =====================================================
+   INITIALIZE 3D
+===================================================== */
+
+function init3D(){
+
+    const canvas =
+    document.getElementById("scene");
+
+
+    renderer =
+    new THREE.WebGLRenderer({
+        canvas:canvas,
+        antialias:true
+    });
+
+
+    renderer.setPixelRatio(
+        Math.min(
+            window.devicePixelRatio,
+            2
+        )
+    );
+
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+
+    renderer.outputColorSpace =
+    THREE.SRGBColorSpace;
+
+
+    /* SCENE */
+
+    scene =
+    new THREE.Scene();
+
+
+    scene.background =
+    new THREE.Color(
+        0x05070d
+    );
+
+
+    /* CAMERA */
+
+    camera =
+    new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth /
+        window.innerHeight,
+        0.1,
+        1000
+    );
+
+
+    camera.position.set(
+        9,
+        7,
+        10
+    );
+
+
+    /* CONTROLS */
+
+    controls =
+    new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+
+    controls.enableDamping=true;
+    controls.dampingFactor=.07;
+
+    controls.minDistance=3;
+    controls.maxDistance=30;
+
+    controls.target.set(0,0,0);
+
+
+    /* LIGHT */
+
+    scene.add(
+        new THREE.AmbientLight(
+            0xffffff,
+            1.5
+        )
+    );
+
+
+    const light =
+    new THREE.DirectionalLight(
+        0xffffff,
+        3
+    );
+
+    light.position.set(
+        8,
+        12,
+        10
+    );
+
+    scene.add(light);
+
+
+    const blueLight =
+    new THREE.PointLight(
+        0x45d9ff,
+        80,
+        50
+    );
+
+    blueLight.position.set(
+        -7,
+        4,
+        -8
+    );
+
+    scene.add(blueLight);
+
+
+    /* GRID */
+
+    grid =
+    new THREE.GridHelper(
+        30,
+        30,
+        0x29445a,
+        0x152331
+    );
+
+    grid.position.y=-4;
+
+    scene.add(grid);
+
+
+    /* GROUPS */
+
+    cubeGroup =
+    new THREE.Group();
+
+    scene.add(cubeGroup);
+
+
+    labelGroup =
+    new THREE.Group();
+
+    scene.add(labelGroup);
+
+
+    buildCube();
+
+    updateLabels();
+
+    updateMath();
+
+    animate();
+
+}
+
+
+/* =====================================================
+   MATERIAL
+===================================================== */
 
 const material =
 new THREE.MeshStandardMaterial({
 
     color:0x25b9ff,
 
-    metalness:0.15,
+    metalness:.15,
 
-    roughness:0.25,
+    roughness:.25,
 
     transparent:true,
 
-    opacity:0.88
+    opacity:.88
+
 });
 
 
-let L = 5;
-let B = 4;
-let H = 3;
-
-
 /* =====================================================
-   BUILD
+   BUILD CUBE
 ===================================================== */
 
 function buildCube(){
@@ -705,6 +910,7 @@ function buildCube(){
 
         cube.geometry.dispose();
     }
+
 
     if(edges){
 
@@ -749,6 +955,7 @@ function buildCube(){
 
 
     cubeGroup.add(edges);
+
 }
 
 
@@ -756,25 +963,30 @@ function buildCube(){
    LABELS
 ===================================================== */
 
-const labelGroup =
-new THREE.Group();
+function makeLabel(
+    text,
+    x,
+    y,
+    z
+){
 
-scene.add(labelGroup);
+    const canvas =
+    document.createElement(
+        "canvas"
+    );
 
 
-function makeLabel(text,x,y,z){
+    canvas.width=400;
+    canvas.height=100;
 
-    const c =
-    document.createElement("canvas");
-
-    c.width = 400;
-    c.height = 100;
 
     const ctx =
-    c.getContext("2d");
+    canvas.getContext("2d");
+
 
     ctx.fillStyle =
     "rgba(5,10,18,.92)";
+
 
     ctx.beginPath();
 
@@ -784,17 +996,16 @@ function makeLabel(text,x,y,z){
 
     ctx.fill();
 
-    ctx.fillStyle =
-    "white";
 
-    ctx.font =
+    ctx.fillStyle="white";
+
+    ctx.font=
     "bold 40px Arial";
 
-    ctx.textAlign =
-    "center";
+    ctx.textAlign="center";
 
-    ctx.textBaseline =
-    "middle";
+    ctx.textBaseline="middle";
+
 
     ctx.fillText(
         text,
@@ -804,7 +1015,9 @@ function makeLabel(text,x,y,z){
 
 
     const texture =
-    new THREE.CanvasTexture(c);
+    new THREE.CanvasTexture(
+        canvas
+    );
 
 
     const sprite =
@@ -829,12 +1042,14 @@ function makeLabel(text,x,y,z){
 
 
     return sprite;
+
 }
 
 
 function updateLabels(){
 
     labelGroup.clear();
+
 
     labelGroup.add(
         makeLabel(
@@ -864,11 +1079,16 @@ function updateLabels(){
             B/2
         )
     );
+
+
+    labelGroup.visible =
+    labels;
+
 }
 
 
 /* =====================================================
-   MATH
+   CALCULATIONS
 ===================================================== */
 
 function updateMath(){
@@ -919,6 +1139,7 @@ function updateMath(){
         "statH"
     ).textContent =
     H.toFixed(1);
+
 }
 
 
@@ -954,25 +1175,28 @@ function update(){
 
     document.getElementById(
         "lValue"
-    ).textContent =
+    ).textContent=
     L.toFixed(1);
 
 
     document.getElementById(
         "bValue"
-    ).textContent =
+    ).textContent=
     B.toFixed(1);
 
 
     document.getElementById(
         "hValue"
-    ).textContent =
+    ).textContent=
     H.toFixed(1);
 
 
     buildCube();
+
     updateLabels();
+
     updateMath();
+
 }
 
 
@@ -1001,10 +1225,8 @@ document.getElementById(
 
 
 /* =====================================================
-   WIREFRAME
+   BUTTONS
 ===================================================== */
-
-let wire = false;
 
 document.getElementById(
     "wire"
@@ -1012,23 +1234,19 @@ document.getElementById(
     "click",
     function(){
 
-        wire = !wire;
+        wire=!wire;
 
-        material.wireframe = wire;
+        material.wireframe=
+        wire;
 
         this.classList.toggle(
             "active",
             wire
         );
+
     }
 );
 
-
-/* =====================================================
-   LABELS
-===================================================== */
-
-let labels = true;
 
 document.getElementById(
     "labels"
@@ -1036,24 +1254,19 @@ document.getElementById(
     "click",
     function(){
 
-        labels = !labels;
+        labels=!labels;
 
-        labelGroup.visible =
+        labelGroup.visible=
         labels;
 
         this.classList.toggle(
             "active",
             labels
         );
+
     }
 );
 
-
-/* =====================================================
-   EXPLODE
-===================================================== */
-
-let explode = false;
 
 document.getElementById(
     "explode"
@@ -1061,28 +1274,23 @@ document.getElementById(
     "click",
     function(){
 
-        explode = !explode;
+        exploded=!exploded;
 
-        cubeGroup.position.y =
-        explode ? 1.2 : 0;
+        cubeGroup.position.y=
+        exploded ? 1.2 : 0;
 
         cubeGroup.scale.setScalar(
-            explode ? 1.1 : 1
+            exploded ? 1.1 : 1
         );
 
         this.classList.toggle(
             "active",
-            explode
+            exploded
         );
+
     }
 );
 
-
-/* =====================================================
-   GRID
-===================================================== */
-
-let gridVisible = true;
 
 document.getElementById(
     "grid"
@@ -1090,25 +1298,17 @@ document.getElementById(
     "click",
     function(){
 
-        gridVisible =
-        !gridVisible;
-
-        grid.visible =
-        gridVisible;
+        grid.visible=
+        !grid.visible;
 
         this.classList.toggle(
             "active",
-            gridVisible
+            grid.visible
         );
+
     }
 );
 
-
-/* =====================================================
-   AUTO ROTATION
-===================================================== */
-
-let autoRotate = false;
 
 document.getElementById(
     "spin"
@@ -1116,13 +1316,14 @@ document.getElementById(
     "click",
     function(){
 
-        autoRotate =
+        autoRotate=
         !autoRotate;
 
         this.classList.toggle(
             "active",
             autoRotate
         );
+
     }
 );
 
@@ -1139,21 +1340,23 @@ document.getElementById(
 
         document.getElementById(
             "length"
-        ).value = 5;
+        ).value=5;
 
         document.getElementById(
             "breadth"
-        ).value = 4;
+        ).value=4;
 
         document.getElementById(
             "height"
-        ).value = 3;
+        ).value=3;
 
 
-        L = 5;
-        B = 4;
-        H = 3;
+        L=5;
+        B=4;
+        H=3;
 
+
+        exploded=false;
 
         cubeGroup.position.set(
             0,0,0
@@ -1163,9 +1366,7 @@ document.getElementById(
 
 
         camera.position.set(
-            9,
-            7,
-            10
+            9,7,10
         );
 
 
@@ -1176,8 +1377,6 @@ document.getElementById(
         controls.update();
 
 
-        explode = false;
-
         document.getElementById(
             "explode"
         ).classList.remove(
@@ -1186,6 +1385,7 @@ document.getElementById(
 
 
         update();
+
     }
 );
 
@@ -1198,27 +1398,25 @@ window.addEventListener(
     "resize",
     function(){
 
+        if(!camera || !renderer)
+            return;
+
+
         camera.aspect =
         window.innerWidth /
         window.innerHeight;
 
+
         camera.updateProjectionMatrix();
+
 
         renderer.setSize(
             window.innerWidth,
             window.innerHeight
         );
+
     }
 );
-
-
-/* =====================================================
-   START
-===================================================== */
-
-buildCube();
-updateLabels();
-updateMath();
 
 
 /* =====================================================
@@ -1234,21 +1432,20 @@ function animate(){
 
     if(autoRotate){
 
-        cubeGroup.rotation.y +=
-        0.006;
+        cubeGroup.rotation.y+=.006;
+
     }
 
 
     controls.update();
 
+
     renderer.render(
         scene,
         camera
     );
+
 }
-
-
-animate();
 
 </script>
 
