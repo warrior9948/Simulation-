@@ -3,289 +3,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-<title>3D Cube Lab</title>
+<title>3D Geometry Lab</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #05070d;
-    color: white;
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#05070d;
+    color:white;
 }
 
-body {
-    touch-action: none;
+#app{
+    width:100%;
+    height:100%;
+    position:relative;
+    overflow:hidden;
 }
 
-#app {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    overflow: hidden;
+/* ================= 3D CANVAS ================= */
+
+#scene{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
 }
 
-/* ---------------- CANVAS ---------------- */
+/* ================= TOP BAR ================= */
 
-#scene {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+.topbar{
+    position:absolute;
+    top:12px;
+    left:12px;
+    right:12px;
+    height:56px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 18px;
+
+    background:rgba(8,12,22,.78);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;
+
+    backdrop-filter:blur(14px);
+    z-index:5;
 }
 
-/* ---------------- TOP BAR ---------------- */
-
-.topbar {
-    position: absolute;
-    top: 14px;
-    left: 16px;
-    right: 16px;
-
-    height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 18px;
-
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(10,14,25,.82);
-    backdrop-filter: blur(16px);
-
-    border-radius: 16px;
-
-    z-index: 10;
+.logo{
+    font-weight:900;
+    letter-spacing:1px;
+    font-size:18px;
 }
 
-.logo {
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: 1px;
+.logo span{
+    color:#55d8ff;
 }
 
-.logo span {
-    color: #62d9ff;
+.status{
+    color:#7f91a8;
+    font-size:11px;
 }
 
-.mode {
-    font-size: 12px;
-    color: #8f9bad;
+/* ================= CONTROL PANEL ================= */
+
+.panel{
+    position:absolute;
+
+    left:12px;
+    top:80px;
+    bottom:12px;
+
+    width:250px;
+
+    padding:17px;
+
+    background:rgba(8,12,22,.82);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:18px;
+
+    backdrop-filter:blur(16px);
+
+    overflow-y:auto;
+    z-index:5;
 }
 
-/* ---------------- LEFT PANEL ---------------- */
-
-.panel {
-    position: absolute;
-    left: 16px;
-    top: 88px;
-    bottom: 16px;
-
-    width: 270px;
-
-    padding: 18px;
-
-    border: 1px solid rgba(255,255,255,.1);
-    background: rgba(9,13,23,.86);
-    backdrop-filter: blur(18px);
-
-    border-radius: 18px;
-
-    z-index: 10;
-
-    overflow-y: auto;
+.title{
+    font-size:11px;
+    color:#7e8da3;
+    text-transform:uppercase;
+    letter-spacing:1.3px;
+    margin-bottom:14px;
 }
 
-.section-title {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1.4px;
-    color: #7e8ca3;
-
-    margin-bottom: 13px;
+.control{
+    margin-bottom:18px;
 }
 
-.control {
-    margin-bottom: 18px;
+.control-row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:7px;
+
+    font-size:13px;
 }
 
-.control-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-
-    font-size: 13px;
+.number{
+    color:#55d8ff;
+    font-weight:bold;
 }
 
-.value {
-    color: #62d9ff;
-    font-weight: bold;
+input[type="range"]{
+    width:100%;
+    accent-color:#55d8ff;
 }
 
-input[type="range"] {
-    width: 100%;
-    accent-color: #62d9ff;
+hr{
+    border:0;
+    border-top:1px solid rgba(255,255,255,.08);
+    margin:18px 0;
 }
 
-/* ---------------- BUTTONS ---------------- */
+/* ================= BUTTONS ================= */
 
-.buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 12px;
+.buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
 }
 
-button {
-    min-height: 42px;
+button{
+    min-height:42px;
 
-    border-radius: 11px;
+    border-radius:11px;
 
-    border: 1px solid rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.12);
 
-    background: rgba(255,255,255,.06);
+    background:rgba(255,255,255,.055);
 
-    color: white;
+    color:white;
 
-    font-weight: 600;
+    font-weight:bold;
 
-    cursor: pointer;
+    cursor:pointer;
 
-    transition: .18s ease;
+    transition:.2s;
 }
 
-button:hover {
-    background: rgba(98,217,255,.14);
-    border-color: rgba(98,217,255,.4);
+button:hover{
+    background:rgba(85,216,255,.12);
+    border-color:rgba(85,216,255,.45);
 }
 
-button.active {
-    background: rgba(98,217,255,.18);
-    border-color: #62d9ff;
+button.active{
+    background:rgba(85,216,255,.18);
+    border-color:#55d8ff;
 }
 
-/* ---------------- STATS ---------------- */
+/* ================= STATS ================= */
 
-.stats {
-    position: absolute;
+.stats{
+    position:absolute;
 
-    right: 16px;
-    top: 88px;
+    right:12px;
+    top:80px;
 
-    width: 240px;
+    width:220px;
 
-    z-index: 10;
+    z-index:5;
 }
 
-.stat-card {
-    margin-bottom: 9px;
+.card{
+    background:rgba(8,12,22,.82);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:14px;
 
-    padding: 13px 15px;
+    padding:12px 14px;
+    margin-bottom:8px;
 
-    border-radius: 14px;
-
-    background: rgba(9,13,23,.86);
-    backdrop-filter: blur(16px);
-
-    border: 1px solid rgba(255,255,255,.1);
+    backdrop-filter:blur(14px);
 }
 
-.stat-label {
-    font-size: 10px;
-    color: #7d899c;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.label{
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    color:#7c8ba0;
 }
 
-.stat-value {
-    font-size: 21px;
-    font-weight: 800;
-    margin-top: 4px;
+.value{
+    margin-top:4px;
+    font-size:21px;
+    font-weight:900;
 }
 
-.formula {
-    color: #7f8da3;
-    font-size: 11px;
-    margin-top: 3px;
+.formula{
+    margin-top:3px;
+    color:#718097;
+    font-size:10px;
 }
 
-/* ---------------- BOTTOM ---------------- */
+/* ================= HELP ================= */
 
-.help {
-    position: absolute;
+.help{
+    position:absolute;
 
-    bottom: 16px;
-    left: 50%;
+    bottom:13px;
+    left:50%;
+    transform:translateX(-50%);
 
-    transform: translateX(-50%);
+    background:rgba(8,12,22,.75);
+    border:1px solid rgba(255,255,255,.1);
 
-    padding: 9px 15px;
+    border-radius:999px;
 
-    background: rgba(9,13,23,.75);
-    border: 1px solid rgba(255,255,255,.1);
+    padding:9px 14px;
 
-    border-radius: 999px;
+    color:#8795a8;
+    font-size:10px;
 
-    color: #8f9bad;
+    z-index:5;
 
-    font-size: 11px;
-
-    z-index: 10;
+    white-space:nowrap;
 }
 
-@media (max-width: 850px) {
+/* ================= MOBILE ================= */
 
-    .panel {
-        width: 220px;
+@media(max-width:750px){
+
+    .panel{
+        width:190px;
+        padding:12px;
     }
 
-    .stats {
-        width: 190px;
+    .stats{
+        width:165px;
     }
 
-    .stat-value {
-        font-size: 17px;
+    .value{
+        font-size:16px;
+    }
+
+    .logo{
+        font-size:14px;
+    }
+
+    .status{
+        display:none;
+    }
+
+    .help{
+        font-size:9px;
+        max-width:90%;
+        overflow:hidden;
     }
 }
 
-/* Portrait warning */
+@media(max-width:500px){
 
-#portrait {
-    display: none;
-
-    position: absolute;
-    inset: 0;
-
-    z-index: 100;
-
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-
-    background: #05070d;
-
-    padding: 30px;
-}
-
-@media (orientation: portrait) {
-
-    #portrait {
-        display: flex;
+    .panel{
+        width:170px;
     }
 
-    #app {
-        display: none;
+    .stats{
+        width:145px;
+    }
+
+    .card{
+        padding:9px;
+    }
+
+    .buttons{
+        grid-template-columns:1fr;
     }
 }
 </style>
@@ -293,255 +295,252 @@ button.active {
 
 <body>
 
-<div id="portrait">
-    <div>
-        <div style="font-size:45px">📱↔️</div>
-        <h2 style="margin:15px 0;">Rotate Your Device</h2>
-        <p style="color:#8995a8;">
-            This 3D laboratory is designed for landscape mode.
-        </p>
-    </div>
-</div>
-
 <div id="app">
 
-    <canvas id="scene"></canvas>
+<canvas id="scene"></canvas>
 
-    <!-- TOP -->
+<!-- ================= TOP ================= -->
 
-    <div class="topbar">
+<div class="topbar">
 
-        <div class="logo">
-            3D <span>GEOMETRY LAB</span>
-        </div>
-
-        <div class="mode">
-            INTERACTIVE CUBOID
-        </div>
-
+    <div class="logo">
+        3D <span>GEOMETRY LAB</span>
     </div>
 
-    <!-- CONTROLS -->
-
-    <div class="panel">
-
-        <div class="section-title">
-            Dimensions
-        </div>
-
-        <div class="control">
-
-            <div class="control-header">
-                <span>Length</span>
-                <span class="value" id="lengthValue">5</span>
-            </div>
-
-            <input
-                id="length"
-                type="range"
-                min="1"
-                max="12"
-                step="0.1"
-                value="5"
-            >
-
-        </div>
-
-        <div class="control">
-
-            <div class="control-header">
-                <span>Breadth</span>
-                <span class="value" id="breadthValue">4</span>
-            </div>
-
-            <input
-                id="breadth"
-                type="range"
-                min="1"
-                max="12"
-                step="0.1"
-                value="4"
-            >
-
-        </div>
-
-        <div class="control">
-
-            <div class="control-header">
-                <span>Height</span>
-                <span class="value" id="heightValue">3</span>
-            </div>
-
-            <input
-                id="height"
-                type="range"
-                min="1"
-                max="12"
-                step="0.1"
-                value="3"
-            >
-
-        </div>
-
-        <div class="section-title">
-            Visualization
-        </div>
-
-        <div class="buttons">
-
-            <button id="wire">
-                ◈ Wireframe
-            </button>
-
-            <button id="explode">
-                💥 Explode
-            </button>
-
-            <button id="labels">
-                📐 Labels
-            </button>
-
-            <button id="reset">
-                ↻ Reset
-            </button>
-
-        </div>
-
-    </div>
-
-    <!-- STATISTICS -->
-
-    <div class="stats">
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Length
-            </div>
-
-            <div
-                class="stat-value"
-                id="statL">
-                5
-            </div>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Breadth
-            </div>
-
-            <div
-                class="stat-value"
-                id="statB">
-                4
-            </div>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Height
-            </div>
-
-            <div
-                class="stat-value"
-                id="statH">
-                3
-            </div>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Volume
-            </div>
-
-            <div
-                class="stat-value"
-                id="volume">
-                60
-            </div>
-
-            <div class="formula">
-                V = L × B × H
-            </div>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Total Surface Area
-            </div>
-
-            <div
-                class="stat-value"
-                id="tsa">
-                94
-            </div>
-
-            <div class="formula">
-                TSA = 2(LB + BH + HL)
-            </div>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                CSA / LSA
-            </div>
-
-            <div
-                class="stat-value"
-                id="csa">
-                54
-            </div>
-
-            <div class="formula">
-                CSA = 2H(L + B)
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="help">
-        🖱️ Drag to rotate · Pinch / wheel to zoom · Tap a face to inspect
+    <div class="status">
+        INTERACTIVE 3D SPACE
     </div>
 
 </div>
 
-<!-- THREE.JS -->
+
+<!-- ================= LEFT CONTROLS ================= -->
+
+<div class="panel">
+
+    <div class="title">
+        Dimensions
+    </div>
+
+    <div class="control">
+
+        <div class="control-row">
+            <span>Length</span>
+            <span class="number" id="lValue">5.0</span>
+        </div>
+
+        <input
+            id="length"
+            type="range"
+            min="1"
+            max="10"
+            step="0.1"
+            value="5">
+
+    </div>
+
+
+    <div class="control">
+
+        <div class="control-row">
+            <span>Breadth</span>
+            <span class="number" id="bValue">4.0</span>
+        </div>
+
+        <input
+            id="breadth"
+            type="range"
+            min="1"
+            max="10"
+            step="0.1"
+            value="4">
+
+    </div>
+
+
+    <div class="control">
+
+        <div class="control-row">
+            <span>Height</span>
+            <span class="number" id="hValue">3.0</span>
+        </div>
+
+        <input
+            id="height"
+            type="range"
+            min="1"
+            max="10"
+            step="0.1"
+            value="3">
+
+    </div>
+
+
+    <hr>
+
+    <div class="title">
+        Visualization
+    </div>
+
+
+    <div class="buttons">
+
+        <button id="wire">
+            ◇ Wireframe
+        </button>
+
+        <button id="labels">
+            📐 Labels
+        </button>
+
+        <button id="explode">
+            💥 Explode
+        </button>
+
+        <button id="grid">
+            ⊞ Grid
+        </button>
+
+        <button id="spin">
+            ⟳ Auto Rotate
+        </button>
+
+        <button id="reset">
+            ↺ Reset
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================= RIGHT STATS ================= -->
+
+<div class="stats">
+
+    <div class="card">
+
+        <div class="label">
+            Length
+        </div>
+
+        <div class="value" id="statL">
+            5
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="label">
+            Breadth
+        </div>
+
+        <div class="value" id="statB">
+            4
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="label">
+            Height
+        </div>
+
+        <div class="value" id="statH">
+            3
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="label">
+            Volume
+        </div>
+
+        <div class="value" id="volume">
+            60
+        </div>
+
+        <div class="formula">
+            V = L × B × H
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="label">
+            Total Surface Area
+        </div>
+
+        <div class="value" id="tsa">
+            94
+        </div>
+
+        <div class="formula">
+            TSA = 2(LB + BH + HL)
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="label">
+            CSA / LSA
+        </div>
+
+        <div class="value" id="csa">
+            54
+        </div>
+
+        <div class="formula">
+            CSA = 2H(L + B)
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="help">
+    👆 Drag = Rotate &nbsp; • &nbsp; 🤏 Pinch = Zoom &nbsp; • &nbsp; 🖱️ Wheel = Zoom
+</div>
+
+</div>
+
 
 <script type="module">
 
-import * as THREE
-from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+import * as THREE from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 
-import { OrbitControls }
-from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls } from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
 
 
-/* =========================================================
-   BASIC SETUP
-========================================================= */
+/* =====================================================
+   RENDERER
+===================================================== */
 
-const canvas = document.getElementById("scene");
+const canvas =
+document.getElementById("scene");
 
-const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: true
+const renderer =
+new THREE.WebGLRenderer({
+    canvas:canvas,
+    antialias:true
 });
 
 renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
+    Math.min(window.devicePixelRatio,2)
 );
 
 renderer.setSize(
@@ -549,27 +548,29 @@ renderer.setSize(
     window.innerHeight
 );
 
-renderer.shadowMap.enabled = true;
+renderer.outputColorSpace =
+THREE.SRGBColorSpace;
 
-renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-
-/* =========================================================
+/* =====================================================
    SCENE
-========================================================= */
+===================================================== */
 
-const scene = new THREE.Scene();
+const scene =
+new THREE.Scene();
 
-scene.background = new THREE.Color(0x05070d);
+scene.background =
+new THREE.Color(0x05070d);
 
 
-/* =========================================================
+/* =====================================================
    CAMERA
-========================================================= */
+===================================================== */
 
-const camera = new THREE.PerspectiveCamera(
+const camera =
+new THREE.PerspectiveCamera(
     45,
-    window.innerWidth / window.innerHeight,
+    window.innerWidth/window.innerHeight,
     0.1,
     1000
 );
@@ -581,78 +582,77 @@ camera.position.set(
 );
 
 
-/* =========================================================
-   ORBIT CONTROLS
-========================================================= */
+/* =====================================================
+   CONTROLS
+===================================================== */
 
-const controls = new OrbitControls(
+const controls =
+new OrbitControls(
     camera,
     renderer.domElement
 );
 
 controls.enableDamping = true;
-
 controls.dampingFactor = 0.07;
 
-controls.minDistance = 4;
-
-controls.maxDistance = 35;
+controls.minDistance = 3;
+controls.maxDistance = 30;
 
 controls.target.set(0,0,0);
 
 
-/* =========================================================
+/* =====================================================
    LIGHTING
-========================================================= */
+===================================================== */
 
-const ambient = new THREE.AmbientLight(
-    0xffffff,
-    1.5
+scene.add(
+    new THREE.AmbientLight(
+        0xffffff,
+        1.5
+    )
 );
 
-scene.add(ambient);
-
-
-const keyLight = new THREE.DirectionalLight(
+const light =
+new THREE.DirectionalLight(
     0xffffff,
     3
 );
 
-keyLight.position.set(
+light.position.set(
     8,
     12,
     10
 );
 
-keyLight.castShadow = true;
-
-scene.add(keyLight);
+scene.add(light);
 
 
-const fillLight = new THREE.PointLight(
-    0x4ac8ff,
-    70,
+const blueLight =
+new THREE.PointLight(
+    0x45d9ff,
+    80,
     50
 );
 
-fillLight.position.set(
-    -8,
+blueLight.position.set(
+    -7,
     4,
     -8
 );
 
-scene.add(fillLight);
+scene.add(blueLight);
 
 
-/* =========================================================
+/* =====================================================
    GRID
-========================================================= */
+===================================================== */
 
-const grid = new THREE.GridHelper(
+const grid =
+new THREE.GridHelper(
     30,
     30,
-    0x294052,
-    0x17212d
+    0x29445a,
+    0x152331
 );
 
 grid.position.y = -4;
@@ -660,571 +660,547 @@ grid.position.y = -4;
 scene.add(grid);
 
 
-/* =========================================================
-   CUBE GROUP
-========================================================= */
+/* =====================================================
+   CUBE
+===================================================== */
 
-const cubeGroup = new THREE.Group();
+let cube;
+let edges;
+
+const cubeGroup =
+new THREE.Group();
 
 scene.add(cubeGroup);
 
 
-/* =========================================================
-   MATERIAL
-========================================================= */
+const material =
+new THREE.MeshStandardMaterial({
 
-const material = new THREE.MeshStandardMaterial({
+    color:0x25b9ff,
 
-    color: 0x35b8ff,
+    metalness:0.15,
 
-    metalness: 0.15,
+    roughness:0.25,
 
-    roughness: 0.28,
+    transparent:true,
 
-    transparent: true,
-
-    opacity: 0.88
-
+    opacity:0.88
 });
 
 
-let cube;
-
-let edges;
-
-let dimensions = {
-    l: 5,
-    b: 4,
-    h: 3
-};
+let L = 5;
+let B = 4;
+let H = 3;
 
 
-/* =========================================================
-   BUILD CUBE
-========================================================= */
+/* =====================================================
+   BUILD
+===================================================== */
 
-function buildCube() {
+function buildCube(){
 
-    if (cube) {
+    if(cube){
+
         cubeGroup.remove(cube);
+
         cube.geometry.dispose();
     }
 
-    if (edges) {
+    if(edges){
+
         cubeGroup.remove(edges);
+
         edges.geometry.dispose();
     }
 
-    const geometry =
-        new THREE.BoxGeometry(
-            dimensions.l,
-            dimensions.h,
-            dimensions.b
-        );
 
-    cube = new THREE.Mesh(
+    const geometry =
+    new THREE.BoxGeometry(
+        L,
+        H,
+        B
+    );
+
+
+    cube =
+    new THREE.Mesh(
         geometry,
         material
     );
 
-    cube.castShadow = true;
-    cube.receiveShadow = true;
 
     cubeGroup.add(cube);
 
 
     const edgeGeometry =
-        new THREE.EdgesGeometry(geometry);
-
-    const edgeMaterial =
-        new THREE.LineBasicMaterial({
-            color: 0xb8efff
-        });
-
-    edges = new THREE.LineSegments(
-        edgeGeometry,
-        edgeMaterial
+    new THREE.EdgesGeometry(
+        geometry
     );
+
+
+    edges =
+    new THREE.LineSegments(
+        edgeGeometry,
+
+        new THREE.LineBasicMaterial({
+            color:0xb9f3ff
+        })
+    );
+
 
     cubeGroup.add(edges);
 }
 
 
-/* =========================================================
-   LABEL SYSTEM
-========================================================= */
+/* =====================================================
+   LABELS
+===================================================== */
 
-const labelGroup = new THREE.Group();
+const labelGroup =
+new THREE.Group();
 
 scene.add(labelGroup);
 
 
-function createLabel(
-    text,
-    position
-) {
+function makeLabel(text,x,y,z){
 
-    const canvas =
-        document.createElement("canvas");
+    const c =
+    document.createElement("canvas");
 
-    canvas.width = 512;
-    canvas.height = 128;
+    c.width = 400;
+    c.height = 100;
 
     const ctx =
-        canvas.getContext("2d");
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+    c.getContext("2d");
 
     ctx.fillStyle =
-        "rgba(5,10,18,.9)";
+    "rgba(5,10,18,.92)";
+
+    ctx.beginPath();
 
     ctx.roundRect(
-        10,
-        10,
-        492,
-        108,
-        22
+        5,5,390,90,18
     );
 
     ctx.fill();
 
     ctx.fillStyle =
-        "#ffffff";
+    "white";
 
     ctx.font =
-        "bold 48px Arial";
+    "bold 40px Arial";
 
     ctx.textAlign =
-        "center";
+    "center";
 
     ctx.textBaseline =
-        "middle";
+    "middle";
 
     ctx.fillText(
         text,
-        256,
-        64
+        200,
+        50
     );
 
-    const texture =
-        new THREE.CanvasTexture(canvas);
 
-    const material =
-        new THREE.SpriteMaterial({
-            map: texture,
-            transparent: true
-        });
+    const texture =
+    new THREE.CanvasTexture(c);
+
 
     const sprite =
-        new THREE.Sprite(material);
+    new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map:texture,
+            transparent:true
+        })
+    );
+
 
     sprite.scale.set(
-        2.5,
-        .62,
+        2.2,
+        .55,
         1
     );
 
-    sprite.position.copy(position);
+
+    sprite.position.set(
+        x,y,z
+    );
+
 
     return sprite;
 }
 
 
-function updateLabels() {
+function updateLabels(){
 
-    while (
-        labelGroup.children.length
-    ) {
-
-        const obj =
-            labelGroup.children.pop();
-
-        obj.material.map.dispose();
-        obj.material.dispose();
-
-    }
-
-    const l = dimensions.l;
-    const b = dimensions.b;
-    const h = dimensions.h;
+    labelGroup.clear();
 
     labelGroup.add(
-        createLabel(
-            `L = ${l.toFixed(1)}`,
-            new THREE.Vector3(
-                0,
-                -h / 2 - .7,
-                b / 2 + .2
-            )
+        makeLabel(
+            "L = "+L.toFixed(1),
+            0,
+            -H/2-.7,
+            B/2+.3
         )
     );
 
+
     labelGroup.add(
-        createLabel(
-            `B = ${b.toFixed(1)}`,
-            new THREE.Vector3(
-                l / 2 + .8,
-                -h / 2 - .7,
-                0
-            )
+        makeLabel(
+            "B = "+B.toFixed(1),
+            L/2+.8,
+            -H/2-.7,
+            0
         )
     );
 
+
     labelGroup.add(
-        createLabel(
-            `H = ${h.toFixed(1)}`,
-            new THREE.Vector3(
-                l / 2 + .7,
-                0,
-                b / 2
-            )
+        makeLabel(
+            "H = "+H.toFixed(1),
+            L/2+.7,
+            0,
+            B/2
         )
     );
 }
 
 
-/* =========================================================
-   CALCULATIONS
-========================================================= */
+/* =====================================================
+   MATH
+===================================================== */
 
-function updateMath() {
-
-    const L = dimensions.l;
-    const B = dimensions.b;
-    const H = dimensions.h;
+function updateMath(){
 
     const volume =
-        L * B * H;
+    L*B*H;
+
 
     const tsa =
-        2 * (
-            L * B +
-            B * H +
-            H * L
-        );
+    2*(L*B+B*H+H*L);
+
 
     const csa =
-        2 * H * (L + B);
+    2*H*(L+B);
 
 
     document.getElementById(
         "volume"
     ).textContent =
-        volume.toFixed(2);
+    volume.toFixed(2);
 
 
     document.getElementById(
         "tsa"
     ).textContent =
-        tsa.toFixed(2);
+    tsa.toFixed(2);
 
 
     document.getElementById(
         "csa"
     ).textContent =
-        csa.toFixed(2);
+    csa.toFixed(2);
 
 
     document.getElementById(
         "statL"
     ).textContent =
-        L.toFixed(1);
+    L.toFixed(1);
 
 
     document.getElementById(
         "statB"
     ).textContent =
-        B.toFixed(1);
+    B.toFixed(1);
 
 
     document.getElementById(
         "statH"
     ).textContent =
-        H.toFixed(1);
+    H.toFixed(1);
 }
 
 
-/* =========================================================
-   INPUTS
-========================================================= */
+/* =====================================================
+   SLIDERS
+===================================================== */
 
-const lengthSlider =
-    document.getElementById("length");
+function update(){
 
-const breadthSlider =
-    document.getElementById("breadth");
-
-const heightSlider =
-    document.getElementById("height");
-
-
-function updateDimensions() {
-
-    dimensions.l =
-        Number(lengthSlider.value);
-
-    dimensions.b =
-        Number(breadthSlider.value);
-
-    dimensions.h =
-        Number(heightSlider.value);
+    L =
+    Number(
+        document.getElementById(
+            "length"
+        ).value
+    );
 
 
-    document.getElementById(
-        "lengthValue"
-    ).textContent =
-        dimensions.l.toFixed(1);
+    B =
+    Number(
+        document.getElementById(
+            "breadth"
+        ).value
+    );
+
+
+    H =
+    Number(
+        document.getElementById(
+            "height"
+        ).value
+    );
 
 
     document.getElementById(
-        "breadthValue"
+        "lValue"
     ).textContent =
-        dimensions.b.toFixed(1);
+    L.toFixed(1);
 
 
     document.getElementById(
-        "heightValue"
+        "bValue"
     ).textContent =
-        dimensions.h.toFixed(1);
+    B.toFixed(1);
+
+
+    document.getElementById(
+        "hValue"
+    ).textContent =
+    H.toFixed(1);
 
 
     buildCube();
-
     updateLabels();
-
     updateMath();
 }
 
 
-lengthSlider.addEventListener(
+document.getElementById(
+    "length"
+).addEventListener(
     "input",
-    updateDimensions
-);
-
-breadthSlider.addEventListener(
-    "input",
-    updateDimensions
-);
-
-heightSlider.addEventListener(
-    "input",
-    updateDimensions
+    update
 );
 
 
-/* =========================================================
+document.getElementById(
+    "breadth"
+).addEventListener(
+    "input",
+    update
+);
+
+
+document.getElementById(
+    "height"
+).addEventListener(
+    "input",
+    update
+);
+
+
+/* =====================================================
    WIREFRAME
-========================================================= */
+===================================================== */
 
-let wireframe = false;
+let wire = false;
 
-document
-    .getElementById("wire")
-    .addEventListener(
-        "click",
-        function () {
+document.getElementById(
+    "wire"
+).addEventListener(
+    "click",
+    function(){
 
-            wireframe =
-                !wireframe;
+        wire = !wire;
 
-            material.wireframe =
-                wireframe;
+        material.wireframe = wire;
 
-            this.classList.toggle(
-                "active",
-                wireframe
-            );
-
-        }
-    );
-
-
-/* =========================================================
-   LABEL TOGGLE
-========================================================= */
-
-let labelsVisible = true;
-
-document
-    .getElementById("labels")
-    .addEventListener(
-        "click",
-        function () {
-
-            labelsVisible =
-                !labelsVisible;
-
-            labelGroup.visible =
-                labelsVisible;
-
-            this.classList.toggle(
-                "active",
-                labelsVisible
-            );
-
-        }
-    );
-
-
-/* =========================================================
-   EXPLODE MODE
-========================================================= */
-
-let exploded = false;
-
-document
-    .getElementById("explode")
-    .addEventListener(
-        "click",
-        function () {
-
-            exploded =
-                !exploded;
-
-            cubeGroup.position.y =
-                exploded ? 1.2 : 0;
-
-            cubeGroup.scale.setScalar(
-                exploded ? 1.12 : 1
-            );
-
-            this.classList.toggle(
-                "active",
-                exploded
-            );
-
-        }
-    );
-
-
-/* =========================================================
-   RESET
-========================================================= */
-
-document
-    .getElementById("reset")
-    .addEventListener(
-        "click",
-        function () {
-
-            dimensions = {
-                l: 5,
-                b: 4,
-                h: 3
-            };
-
-            lengthSlider.value = 5;
-            breadthSlider.value = 4;
-            heightSlider.value = 3;
-
-            exploded = false;
-
-            cubeGroup.position.set(
-                0,
-                0,
-                0
-            );
-
-            cubeGroup.scale.setScalar(1);
-
-            camera.position.set(
-                9,
-                7,
-                10
-            );
-
-            controls.target.set(
-                0,
-                0,
-                0
-            );
-
-            controls.update();
-
-            updateDimensions();
-
-        }
-    );
-
-
-/* =========================================================
-   FACE CLICK / HOVER EFFECT
-========================================================= */
-
-const raycaster =
-    new THREE.Raycaster();
-
-const pointer =
-    new THREE.Vector2();
-
-let selectedFace = null;
-
-
-renderer.domElement.addEventListener(
-    "pointerdown",
-    function(event) {
-
-        const rect =
-            renderer.domElement
-                .getBoundingClientRect();
-
-        pointer.x =
-            (
-                (event.clientX - rect.left)
-                / rect.width
-            ) * 2 - 1;
-
-        pointer.y =
-            -(
-                (event.clientY - rect.top)
-                / rect.height
-            ) * 2 + 1;
-
-        raycaster.setFromCamera(
-            pointer,
-            camera
+        this.classList.toggle(
+            "active",
+            wire
         );
-
-        const hits =
-            raycaster.intersectObject(
-                cube
-            );
-
-        if (hits.length) {
-
-            selectedFace =
-                hits[0].faceIndex;
-
-            material.emissive =
-                new THREE.Color(
-                    0x164b64
-                );
-
-            material.emissiveIntensity =
-                1;
-
-        }
-
     }
 );
 
 
-/* =========================================================
+/* =====================================================
+   LABELS
+===================================================== */
+
+let labels = true;
+
+document.getElementById(
+    "labels"
+).addEventListener(
+    "click",
+    function(){
+
+        labels = !labels;
+
+        labelGroup.visible =
+        labels;
+
+        this.classList.toggle(
+            "active",
+            labels
+        );
+    }
+);
+
+
+/* =====================================================
+   EXPLODE
+===================================================== */
+
+let explode = false;
+
+document.getElementById(
+    "explode"
+).addEventListener(
+    "click",
+    function(){
+
+        explode = !explode;
+
+        cubeGroup.position.y =
+        explode ? 1.2 : 0;
+
+        cubeGroup.scale.setScalar(
+            explode ? 1.1 : 1
+        );
+
+        this.classList.toggle(
+            "active",
+            explode
+        );
+    }
+);
+
+
+/* =====================================================
+   GRID
+===================================================== */
+
+let gridVisible = true;
+
+document.getElementById(
+    "grid"
+).addEventListener(
+    "click",
+    function(){
+
+        gridVisible =
+        !gridVisible;
+
+        grid.visible =
+        gridVisible;
+
+        this.classList.toggle(
+            "active",
+            gridVisible
+        );
+    }
+);
+
+
+/* =====================================================
+   AUTO ROTATION
+===================================================== */
+
+let autoRotate = false;
+
+document.getElementById(
+    "spin"
+).addEventListener(
+    "click",
+    function(){
+
+        autoRotate =
+        !autoRotate;
+
+        this.classList.toggle(
+            "active",
+            autoRotate
+        );
+    }
+);
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+document.getElementById(
+    "reset"
+).addEventListener(
+    "click",
+    function(){
+
+        document.getElementById(
+            "length"
+        ).value = 5;
+
+        document.getElementById(
+            "breadth"
+        ).value = 4;
+
+        document.getElementById(
+            "height"
+        ).value = 3;
+
+
+        L = 5;
+        B = 4;
+        H = 3;
+
+
+        cubeGroup.position.set(
+            0,0,0
+        );
+
+        cubeGroup.scale.setScalar(1);
+
+
+        camera.position.set(
+            9,
+            7,
+            10
+        );
+
+
+        controls.target.set(
+            0,0,0
+        );
+
+        controls.update();
+
+
+        explode = false;
+
+        document.getElementById(
+            "explode"
+        ).classList.remove(
+            "active"
+        );
+
+
+        update();
+    }
+);
+
+
+/* =====================================================
    RESIZE
-========================================================= */
+===================================================== */
 
 window.addEventListener(
     "resize",
-    function () {
+    function(){
 
         camera.aspect =
-            window.innerWidth /
-            window.innerHeight;
+        window.innerWidth /
+        window.innerHeight;
 
         camera.updateProjectionMatrix();
 
@@ -1232,31 +1208,36 @@ window.addEventListener(
             window.innerWidth,
             window.innerHeight
         );
-
     }
 );
 
 
-/* =========================================================
-   INITIALIZE
-========================================================= */
+/* =====================================================
+   START
+===================================================== */
 
 buildCube();
-
 updateLabels();
-
 updateMath();
 
 
-/* =========================================================
+/* =====================================================
    ANIMATION
-========================================================= */
+===================================================== */
 
-function animate() {
+function animate(){
 
     requestAnimationFrame(
         animate
     );
+
+
+    if(autoRotate){
+
+        cubeGroup.rotation.y +=
+        0.006;
+    }
+
 
     controls.update();
 
@@ -1264,8 +1245,8 @@ function animate() {
         scene,
         camera
     );
-
 }
+
 
 animate();
 
